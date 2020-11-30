@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>::SpaceX Launch Programs::</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/custom-styles.css">
+</head>
+<body>
+
+
+<div class="container">
+	<h3 class="font-weight-bold mt-2 mb-3">SpaceX Launch Programs</h3>
+	<div class="d-flex">
+		<div class="left-filters">
+			<div class="lf-inner">
+				<h5 class="lf-titleh5 font-weight-bold">Filters</h5>
+				<p class="lf-sbutitle"><span>Launch Year</span></p>
+				<div class="row lf-buttons">
+					<div class="col-6"><button class="btn btn-sm btn-success" onclick="year1(2006)">2006</button></div>
+					<div class="col-6"><button class="btn btn-sm btn-success" onclick="year1(2007)">2007</button></div>
+					<div class="col-6"><button class="btn btn-sm btn-success" onclick="year1(2008)">2008</button></div>
+					<div class="col-6"><button class="btn btn-sm btn-success" onclick="year1(2009)">2009</button></div>
+					<div class="col-6"><button class="btn btn-sm btn-success" onclick="year1(2010)">2010</button></div>
+					<div class="col-6"><button class="btn btn-sm btn-success" onclick="year1(2011)">2011</button></div>
+				</div>
+				<p class="lf-sbutitle"><span>Successful Launch</span></p>
+				<div class="row lf-buttons">
+					<div class="col-6"><button class="btn btn-sm btn-success" onclick="getLaunch(true)"> True</button></div>
+					<div class="col-6"><button class="btn btn-sm btn-success" onclick="getLaunch(false)">False</button></div>
+				</div>
+				<p class="lf-sbutitle"><span>Successful Landing</span></p>
+				<div class="row lf-buttons">
+					<div class="col-6"><button class="btn btn-sm btn-success" onclick="getLanding(true)">True</button></div>
+					<div class="col-6"><button class="btn btn-sm btn-success" onclick="getLanding(false)">False</button></div>
+				</div>
+			</div>
+		</div>
+		 
+		<div class="right-content">
+			<div class="d-flex justify-content-center"> 
+			<div class="spinner-border text-info" 
+			role="status" id="loading"> 
+				<span class="sr-only">Loading...</span> 
+			</div> 
+			</div>
+			<div class="row" id="prodcutdetails">				
+			</div>
+		</div>
+	</div>
+	
+	<div class="mt-5 mb-5 text-center">
+		<strong>Developed By:</strong> Nagaraju Komma
+	</div>
+	
+</div>
+
+
+
+
+<!-- bootstrap libraries start here -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<!-- bootstrap libraries End here -->
+
+<script>
+
+fetch('https://api.spacexdata.com/v3/launches')
+	.then(response => response.json())
+	.then(data => {
+	//console.log(data)
+})
+.catch(error => console.error(error))
+
+
+const api_url = "https://api.spacexdata.com/v3/launches"; 
+
+async function getapi(url) { 
+	//alert(url);
+
+	const response = await fetch(url); 
+	
+	var data = await response.json(); 
+	//console.log(data);
+	show(data); 
+	hideloader(); 
+} 
+
+getapi(api_url); 
+
+function hideloader() { 
+    document.getElementById('loading').style.display = 'none'; 
+}
+
+function show(data) { 
+    let tab = "" ;    
+     
+    for (let r of data) { 
+		//let imgName = `images/${r.mission_name}.png`
+		tab += `
+	<div class="col-lg-4 col-md-6">
+	<div class="product-card">	
+	<div class="product-details" >
+	<div class="pd-img-sec">
+		<img src=${r.links.mission_patch}>
+	</div>
+	<h6>${r.mission_name} </h6> 		
+	<p><strong>Mission Ids:</strong> <span>${r.mission_id}</span> </p> 
+	<p><strong>Launch Year:</strong> <span>${r.launch_year}</span></p> 
+	<p><strong>Successful Year:</strong> <span>${r.upcoming}</span></p>  
+	<p><strong>Successful Landing</strong> <span>${r.launch_year}</span></p> 
+	</div>
+	</div>	
+	</div>`; 
+
+    }
+
+	document.getElementById("prodcutdetails").innerHTML = tab; 	
+	
+	}	
+
+function year1(year){
+	getapi("https://api.spaceXdata.com/v3/launches?limit=100&launch_success=true&land_success=true&launch_year="+year)
+}
+
+function getLaunch(successFlag){
+	getapi("https://api.spaceXdata.com/v3/launches?limit=100&launch_success="+successFlag)
+}
+
+function getLanding(successFlag){
+	getapi("https://api.spaceXdata.com/v3/launches?limit=100&launch_success=true&land_success="+successFlag)
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>
